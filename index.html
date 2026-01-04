@@ -282,6 +282,14 @@ img:hover {
   box-shadow: var(--shadow);
   border: 3px solid rgba(255, 255, 255, 0.2);
   position: relative;
+  overflow: hidden;
+}
+
+.char img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
 }
 
 .char::after {
@@ -343,28 +351,38 @@ img:hover {
 }
 
 .card::before {
-  content: '👆';
+  content: '💎';
   position: absolute;
-  top: -20px;
-  right: -5px;
-  font-size: 12px;
-  animation: cardPulse 3s infinite ease-in-out;
+  top: -25px;
+  right: -8px;
+  font-size: 14px;
+  background: linear-gradient(135deg, var(--neon), #64ffda);
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--neon);
+  box-shadow: 0 0 15px var(--neon-glow);
+  animation: gemPulse 2s infinite ease-in-out;
   z-index: 1;
 }
 
 .card.locked::before {
-  content: '🔒👆';
-  animation: lockPulse 2s infinite ease-in-out;
+  content: '🔐';
+  background: linear-gradient(135deg, #666, #999);
+  animation: lockShimmer 2s infinite ease-in-out;
 }
 
-@keyframes cardPulse {
+@keyframes gemPulse {
+  0%, 100% { transform: scale(1) rotate(0deg); opacity: 0.8; }
+  50% { transform: scale(1.2) rotate(180deg); opacity: 1; }
+}
+
+@keyframes lockShimmer {
   0%, 100% { opacity: 0.6; transform: scale(1); }
   50% { opacity: 1; transform: scale(1.1); }
-}
-
-@keyframes lockPulse {
-  0%, 100% { opacity: 0.8; }
-  50% { opacity: 1; }
 }
 
 .card.locked {
@@ -399,6 +417,118 @@ img:hover {
   border-radius: 6px;
 }
 
+/* GIFT BOXES */
+.gifts-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 20px;
+  max-width: 800px;
+  padding: 20px;
+  justify-items: center;
+}
+
+.gift-box {
+  width: 120px;
+  height: 120px;
+  position: relative;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  touch-action: manipulation;
+}
+
+.gift-box::before {
+  content: '🎁';
+  position: absolute;
+  top: -15px;
+  right: -5px;
+  font-size: 12px;
+  animation: giftPulse 2s infinite ease-in-out;
+  z-index: 1;
+}
+
+.gift-box.opened::before {
+  content: '✨';
+  animation: sparkle 1s infinite ease-in-out;
+}
+
+@keyframes giftPulse {
+  0%, 100% { opacity: 0.7; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.2); }
+}
+
+.gift {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+  border-radius: 12px;
+  position: relative;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+  transition: all 0.3s ease;
+}
+
+.gift::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 8px;
+  height: 100%;
+  background: #ffd700;
+  border-radius: 4px;
+}
+
+.gift::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 0;
+  transform: translateY(-50%);
+  width: 100%;
+  height: 8px;
+  background: #ffd700;
+  border-radius: 4px;
+}
+
+.gift-box:hover .gift {
+  transform: scale(1.05);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+}
+
+.gift-wish {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 255, 213, 0.1);
+  border: 2px solid var(--neon);
+  border-radius: 12px;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  font-size: 0.75rem;
+  padding: 10px;
+  color: var(--text-primary);
+  backdrop-filter: blur(10px);
+  animation: wishReveal 0.5s ease;
+  line-height: 1.2;
+}
+
+.gift-box.opened .gift {
+  display: none;
+}
+
+.gift-box.opened .gift-wish {
+  display: flex;
+}
+
+@keyframes wishReveal {
+  from { opacity: 0; transform: scale(0.8); }
+  to { opacity: 1; transform: scale(1); }
+}
+
 /* CONFETTI */
 canvas {
   position: fixed;
@@ -406,137 +536,6 @@ canvas {
   left: 0;
   pointer-events: none;
   z-index: 999;
-}
-
-/* RESPONSIVE */
-@media (max-width: 768px) {
-  .page {
-    padding: 15px 10px;
-    min-height: 100vh;
-  }
-  
-  h1 {
-    font-size: clamp(1.8rem, 8vw, 2.5rem);
-    margin-bottom: 1rem;
-  }
-  
-  h2 {
-    font-size: clamp(1.2rem, 6vw, 1.8rem);
-    margin-bottom: 1.5rem;
-    line-height: 1.4;
-  }
-  
-  p {
-    font-size: clamp(0.9rem, 4vw, 1.1rem);
-    margin-bottom: 0.8rem;
-  }
-  
-  button {
-    padding: 14px 24px;
-    font-size: 14px;
-    margin: 6px;
-    min-height: 44px;
-    min-width: 100px;
-  }
-  
-  .nav {
-    margin-top: 25px;
-    flex-direction: column;
-    align-items: center;
-    gap: 8px;
-  }
-  
-  .grid {
-    grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
-    gap: 12px;
-    max-width: 100%;
-    padding: 15px;
-  }
-  
-  .card {
-    width: 80px;
-    height: 80px;
-    font-size: 0.8em;
-  }
-  
-  .card::before {
-    font-size: 10px;
-    top: -15px;
-    right: -3px;
-  }
-  
-  .image-gallery img {
-    width: 120px;
-    height: 120px;
-  }
-  
-  .image-row {
-    gap: 10px;
-  }
-  
-  img {
-    width: 120px;
-    height: 120px;
-  }
-  
-  .cartoon {
-    gap: 15px;
-  }
-  
-  .char {
-    width: 50px;
-    height: 50px;
-  }
-  
-  .typebox {
-    padding: 15px;
-    font-size: 0.95rem;
-    max-height: 50vh;
-  }
-}
-
-/* iPhone XR and similar */
-@media (max-width: 414px) {
-  .page {
-    padding: 10px 8px;
-  }
-  
-  .grid {
-    grid-template-columns: repeat(4, 1fr);
-    gap: 8px;
-    padding: 10px;
-  }
-  
-  .card {
-    width: 70px;
-    height: 70px;
-    font-size: 0.7em;
-  }
-  
-  .image-gallery img {
-    width: 100px;
-    height: 100px;
-  }
-  
-  img {
-    width: 100px;
-    height: 100px;
-  }
-  
-  button {
-    padding: 12px 20px;
-    font-size: 13px;
-  }
-}
-
-/* ENHANCED ANIMATIONS */
-@keyframes pulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.7; }
-}
-
-.page h1 {
-  animation: pulse 3s infinite ease-in-out;
 }
 
 /* TIME BOMB */
@@ -620,6 +619,455 @@ canvas {
   50% { transform: scale(3); opacity: 0.8; }
   100% { transform: scale(10); opacity: 0; }
 }
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+  .page {
+    padding: 15px 10px;
+    min-height: 100vh;
+  }
+  
+  h1 {
+    font-size: clamp(1.8rem, 8vw, 2.5rem);
+    margin-bottom: 1rem;
+  }
+  
+  h2 {
+    font-size: clamp(1.2rem, 6vw, 1.8rem);
+    margin-bottom: 1.5rem;
+    line-height: 1.4;
+  }
+  
+  p {
+    font-size: clamp(0.9rem, 4vw, 1.1rem);
+    margin-bottom: 0.8rem;
+  }
+  
+  button {
+    padding: 14px 24px;
+    font-size: 14px;
+    margin: 6px;
+    min-height: 44px;
+    min-width: 100px;
+  }
+  
+  .nav {
+    margin-top: 25px;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+  }
+  
+  .gifts-grid {
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    gap: 15px;
+    padding: 15px;
+  }
+  
+  .gift-box {
+    width: 100px;
+    height: 100px;
+  }
+  
+  .gift-wish {
+    font-size: 0.65rem;
+    padding: 8px;
+  }
+  
+  .grid {
+    grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+    gap: 12px;
+    max-width: 100%;
+    padding: 15px;
+  }
+  
+  .card {
+    width: 80px;
+    height: 80px;
+    font-size: 0.8em;
+  }
+  
+  .card::before {
+    font-size: 10px;
+    top: -15px;
+    right: -3px;
+  }
+  
+  .flip-card {
+    width: 120px;
+    height: 120px;
+  }
+  
+  .flip-card-back {
+    font-size: 0.75rem;
+    padding: 10px;
+  }
+  
+  .image-gallery img {
+    width: 120px;
+    height: 120px;
+  }
+  
+  .image-row {
+    gap: 10px;
+  }
+  
+  img {
+    width: 120px;
+    height: 120px;
+  }
+  
+  .cartoon {
+    gap: 15px;
+  }
+  
+  .char {
+    width: 50px;
+    height: 50px;
+  }
+  
+  .typebox {
+    padding: 15px;
+    font-size: 0.95rem;
+    max-height: 50vh;
+  }
+}
+
+/* iPhone XR and similar */
+@media (max-width: 414px) {
+  .page {
+    padding: 10px 8px;
+  }
+  
+  .gifts-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    padding: 10px;
+  }
+  
+  .gift-box {
+    width: 90px;
+    height: 90px;
+  }
+  
+  .gift-wish {
+    font-size: 0.6rem;
+    padding: 6px;
+  }
+  
+  .grid {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+    padding: 10px;
+  }
+  
+  .card {
+    width: 70px;
+    height: 70px;
+    font-size: 0.7em;
+  }
+  
+  .flip-card {
+    width: 100px;
+    height: 100px;
+  }
+  
+  .flip-card-back {
+    font-size: 0.65rem;
+    padding: 8px;
+  }
+  
+  .image-gallery img {
+    width: 100px;
+    height: 100px;
+  }
+  
+  img {
+    width: 100px;
+    height: 100px;
+  }
+  
+  button {
+    padding: 12px 20px;
+    font-size: 13px;
+  }
+}
+
+/* FLIP CARD STYLES */
+.flip-card {
+  background-color: transparent;
+  width: 150px;
+  height: 150px;
+  perspective: 1000px;
+  cursor: pointer;
+}
+
+.flip-card-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  transition: transform 0.6s;
+  transform-style: preserve-3d;
+}
+
+.flip-card.flipped .flip-card-inner {
+  transform: rotateY(180deg);
+}
+
+.flip-card-front, .flip-card-back {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+  border-radius: 15px;
+  border: 2px solid var(--neon);
+  box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
+}
+
+.flip-card-front {
+  background-color: #111;
+}
+
+.flip-card-front img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 13px;
+}
+
+.flip-card-back {
+  background: linear-gradient(135deg, #1a1a2e, #16213e);
+  color: var(--neon);
+  transform: rotateY(180deg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 15px;
+  font-size: 0.9rem;
+  line-height: 1.3;
+  text-align: center;
+}
+
+.flip-card::before {
+  content: '↻';
+  position: absolute;
+  top: -30px;
+  right: -10px;
+  font-size: 20px;
+  color: var(--neon);
+  z-index: 10;
+  background: rgba(0, 0, 0, 0.8);
+  border-radius: 50%;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--neon);
+  box-shadow: 0 0 10px var(--neon-glow);
+  animation: flipHint 2s infinite ease-in-out;
+}
+
+@keyframes flipHint {
+  0%, 100% { transform: rotate(0deg) scale(1); opacity: 0.8; }
+  50% { transform: rotate(180deg) scale(1.1); opacity: 1; }
+}
+
+/* FINAL PAGE STYLING */
+.final-message {
+  max-width: 700px;
+  margin: 0 auto;
+  padding: 40px 20px;
+  text-align: center;
+  position: relative;
+  z-index: 10;
+}
+
+.message-content {
+  background: rgba(26, 26, 26, 0.9);
+  border-radius: 20px;
+  padding: 40px 30px;
+  backdrop-filter: blur(15px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+}
+
+.love-paragraph {
+  font-size: clamp(1rem, 2.5vw, 1.1rem);
+  line-height: 1.7;
+  margin-bottom: 2rem;
+  color: var(--text-secondary);
+  font-weight: 400;
+  text-align: left;
+}
+
+.final-wishes {
+  margin-top: 3rem;
+  padding-top: 2rem;
+  border-top: 1px solid rgba(0, 255, 213, 0.3);
+}
+
+.again-title {
+  font-size: clamp(2rem, 5vw, 3rem);
+  color: var(--neon);
+  margin-bottom: 1rem;
+  font-weight: 700;
+  text-shadow: 0 0 30px var(--neon-glow);
+}
+
+.birthday-title {
+  font-size: clamp(1.5rem, 4vw, 2rem);
+  color: var(--neon);
+  margin-bottom: 1.5rem;
+  font-weight: 600;
+}
+
+.years-together {
+  font-size: clamp(1.1rem, 3vw, 1.3rem);
+  color: var(--text-primary);
+  margin-bottom: 2rem;
+  line-height: 1.6;
+}
+
+.marriage-promise {
+  font-size: clamp(1.5rem, 4vw, 2.2rem);
+  color: var(--neon);
+  font-weight: bold;
+  text-shadow: 0 0 25px var(--neon-glow);
+  animation: heartbeat 2s infinite;
+  margin-top: 2rem;
+}
+
+@keyframes heartbeat {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
+/* Mobile optimization for final page */
+@media (max-width: 768px) {
+  .final-message {
+    padding: 20px 15px;
+  }
+  
+  .message-content {
+    padding: 25px 20px;
+  }
+  
+  .love-paragraph {
+    font-size: 0.95rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  .final-wishes {
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+  }
+  
+  .flip-card {
+    width: 120px;
+    height: 120px;
+  }
+  
+  .flip-card-back {
+    font-size: 0.75rem;
+    padding: 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .page {
+    padding: 15px 10px;
+  }
+  
+  .final-message {
+    padding: 15px 10px;
+  }
+  
+  .message-content {
+    padding: 20px 15px;
+    border-radius: 15px;
+  }
+  
+  .love-paragraph {
+    font-size: 0.9rem;
+    line-height: 1.6;
+    margin-bottom: 1.2rem;
+  }
+  
+  .flip-card {
+    width: 100px;
+    height: 100px;
+  }
+  
+  .flip-card-back {
+    font-size: 0.7rem;
+    padding: 8px;
+  }
+  
+  .image-row {
+    gap: 8px;
+  }
+  
+  .bomb {
+    width: 80px;
+    height: 80px;
+  }
+  
+  .timer {
+    font-size: 2rem;
+  }
+  
+  .typebox {
+    font-size: 0.9rem;
+    padding: 15px;
+  }
+}
+
+/* FLOATING HEARTS */
+.floating-hearts {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 5;
+}
+
+.heart {
+  position: absolute;
+  color: rgba(255, 182, 193, 0.6);
+  font-size: 20px;
+  animation: floatUp 8s infinite linear;
+}
+
+@keyframes floatUp {
+  0% {
+    transform: translateY(100vh) rotate(0deg);
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  90% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-100px) rotate(360deg);
+    opacity: 0;
+  }
+}
+
+/* ENHANCED ANIMATIONS */
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+.page h1 {
+  animation: pulse 3s infinite ease-in-out;
+}
 </style>
 </head>
 
@@ -702,13 +1150,58 @@ canvas {
 <h2>How we started</h2>
 <div class="image-gallery">
 <div class="image-row">
+<div class="flip-card" onclick="flipCard(this)">
+<div class="flip-card-inner">
+<div class="flip-card-front">
 <img src="IMG_US_1.jpg" alt="Our beginning">
+</div>
+<div class="flip-card-back">
+First bonding outside school, with my friends—because I was still too shy to spend time alone with you.
+</div>
+</div>
+</div>
+<div class="flip-card" onclick="flipCard(this)">
+<div class="flip-card-inner">
+<div class="flip-card-front">
 <img src="IMG_US_2.jpg" alt="Our journey">
+</div>
+<div class="flip-card-back">
+We finally got to hang out alone together, and we took photos low-key.
+</div>
+</div>
+</div>
+<div class="flip-card" onclick="flipCard(this)">
+<div class="flip-card-inner">
+<div class="flip-card-front">
 <img src="IMG_US_3.jpg" alt="Growing together">
 </div>
+<div class="flip-card-back">
+You were too shy whenever I tried to take photos of you.
+</div>
+</div>
+</div>
+</div>
 <div class="image-row">
+<div class="flip-card" onclick="flipCard(this)">
+<div class="flip-card-inner">
+<div class="flip-card-front">
 <img src="IMG_US_4.jpg" alt="Happy moments">
+</div>
+<div class="flip-card-back">
+Our first bonding moment together that lasted for hours.
+</div>
+</div>
+</div>
+<div class="flip-card" onclick="flipCard(this)">
+<div class="flip-card-inner">
+<div class="flip-card-front">
 <img src="IMG_US_5.jpg" alt="Our love story">
+</div>
+<div class="flip-card-back">
+This was the moment we held hands for the first time.
+</div>
+</div>
+</div>
 </div>
 </div>
 <p>This was the beginning of us. I had no hope in love… but that all changed when you came into my life.</p>
@@ -723,19 +1216,64 @@ canvas {
 <h2>Why you are amazing</h2>
 <div class="image-gallery">
 <div class="image-row">
+<div class="flip-card" onclick="flipCard(this)">
+<div class="flip-card-inner">
+<div class="flip-card-front">
 <img src="HIM1.jpg" alt="Your amazing smile">
+</div>
+<div class="flip-card-back">
+Your smile brightens every moment.
+</div>
+</div>
+</div>
+<div class="flip-card" onclick="flipCard(this)">
+<div class="flip-card-inner">
+<div class="flip-card-front">
 <img src="HIM2.jpg" alt="Your kind heart">
+</div>
+<div class="flip-card-back">
+Your kindness makes people feel truly seen.
+</div>
+</div>
+</div>
+<div class="flip-card" onclick="flipCard(this)">
+<div class="flip-card-inner">
+<div class="flip-card-front">
 <img src="HIM3.jpg" alt="Your strength">
 </div>
+<div class="flip-card-back">
+Your strength quietly inspires me.
+</div>
+</div>
+</div>
+</div>
 <div class="image-row">
+<div class="flip-card" onclick="flipCard(this)">
+<div class="flip-card-inner">
+<div class="flip-card-front">
 <img src="HIM4.jpg" alt="Your warmth">
+</div>
+<div class="flip-card-back">
+Your warmth feels like home.
+</div>
+</div>
+</div>
+<div class="flip-card" onclick="flipCard(this)">
+<div class="flip-card-inner">
+<div class="flip-card-front">
 <img src="HIM5.jpg" alt="Everything about you">
+</div>
+<div class="flip-card-back">
+Everything about you is more than enough.
+</div>
+</div>
+</div>
 </div>
 </div>
 <p>You are patient, kind, and strong. You are the only exception — the reason I believe in love and dared to love again.</p>
 <div class="cartoon">
-<div class="char me"></div>
-<div class="char him"></div>
+<div class="char me"><img src="ME.jpg" alt="Me"></div>
+<div class="char him"><img src="HIM.jpg" alt="Him"></div>
 </div>
 <div class="nav">
 <button onclick="next()">Next</button>
@@ -745,7 +1283,7 @@ canvas {
 
 <!-- 21 REASONS -->
 <div class="page">
-<h2>21 Reasons I Love You</h2>
+<h2>21 things I love about you</h2>
 <div class="grid" id="reasons"></div>
 <div class="nav">
 <button onclick="next()">Next</button>
@@ -756,10 +1294,7 @@ canvas {
 <!-- WISH -->
 <div class="page">
 <h2>My wish for you</h2>
-<p>May life be gentle to you.</p>
-<p>May you never forget how loved you are.</p>
-<p>May you live the life you always dream of.</p>
-<p>Please stay healthy, so we can continue to make memories together.</p>
+<div class="gifts-grid" id="wishes"></div>
 <div class="nav">
 <button onclick="next()">Finish!</button>
 <button onclick="prev()">Back</button>
@@ -767,11 +1302,24 @@ canvas {
 </div>
 
 <!-- END -->
-<div class="page">
-<h1>Again…</h1>
-<h2>Happy Birthday, Doy, My Love! ❤️</h2>
-<p>To more years with you...</p>
-<p style="margin-top:20px; font-size:1.5em; color:var(--neon); font-weight:bold;">I CAN'T WAIT TO MARRY YOU!❤️</p>
+<div class="page" id="finalPage">
+<div class="floating-hearts" id="floatingHearts"></div>
+<div class="final-message">
+<div class="message-content">
+<p class="love-paragraph">
+Loving you has taught me what safety feels like. With you, I don't feel the need to compete, prove, or compare—because you already choose me, and I choose you just as surely. I love you in a way that is calm, certain, and unshakeable. No one could ever replace you in my heart, because the space you hold there was made only for you.
+</p>
+<p class="love-paragraph">
+You are not in competition with anyone, my love. For me, you are already the winner—every single day. You are my best decision, my answered prayer, and the most beautiful thing that has ever happened to me. Thank you for being you, for staying, for loving me the way you do.
+</p>
+<div class="final-wishes">
+<h1 class="again-title">Again…</h1>
+<h2 class="birthday-title">Happy Birthday, Doy, My Love. ❤️</h2>
+<p class="years-together">To more years of growing, healing, laughing, and choosing each other—again and again.</p>
+<p class="marriage-promise">I can't wait to marry you. ❤️</p>
+</div>
+</div>
+</div>
 </div>
 
 <script>
@@ -812,6 +1360,10 @@ function show(){
  if(current === 6){ // Love letter page is at index 6
     typeLetter();
  }
+ 
+ if(current === pages.length - 1){ // Final page
+    startFloatingHearts();
+ }
 }
 
 function next(){ current++; show(); }
@@ -851,6 +1403,10 @@ function startBombTimer(){
  }, 1000);
 }
 
+function flipCard(card) {
+  card.classList.toggle('flipped');
+}
+
 function explodeBomb(){
  const bombElement = document.getElementById('bomb');
  bombElement.style.animation = 'explode 0.8s ease-out';
@@ -884,6 +1440,25 @@ function confetti(){
   });
   requestAnimationFrame(a);
  })();
+}
+
+function startFloatingHearts() {
+  const heartsContainer = document.getElementById('floatingHearts');
+  if (!heartsContainer) return;
+  
+  setInterval(() => {
+    const heart = document.createElement('div');
+    heart.className = 'heart';
+    heart.innerHTML = '💕';
+    heart.style.left = Math.random() * 100 + '%';
+    heart.style.animationDuration = (Math.random() * 3 + 5) + 's';
+    heart.style.fontSize = (Math.random() * 10 + 15) + 'px';
+    heartsContainer.appendChild(heart);
+    
+    setTimeout(() => {
+      heart.remove();
+    }, 8000);
+  }, 800);
 }
 
 function typeLetter(){
@@ -998,6 +1573,56 @@ reasons.forEach((r, i)=>{
     });
 
     grid.appendChild(card);
+});
+
+// 21 BIRTHDAY WISHES GIFT BOXES
+const wishes = [
+  "May life be gentle to you.",
+  "May you never forget how deeply loved you are.",
+  "May you live the life you've always dreamed of.",
+  "Please stay healthy, so we can continue to make memories together.",
+  "May your days be filled with peace and happiness.",
+  "May you always find strength during difficult times.",
+  "May your heart remain kind, no matter what the world brings.",
+  "May you never lose faith in yourself.",
+  "May laughter always find its way back to you.",
+  "May your efforts be rewarded and your hard work recognized.",
+  "May you achieve everything you desire.",
+  "May your dreams grow bigger than your fears.",
+  "May you always choose what brings you peace.",
+  "May every challenge teach you something valuable.",
+  "May you forgive easily and love freely.",
+  "May your nights be calm and your mornings hopeful.",
+  "May you always feel safe, valued, and understood.",
+  "May your heart never feel alone.",
+  "May happiness find you in the simplest moments.",
+  "May you always remember how special you are.",
+  "And may I always be here, cheering for you, no matter what."
+];
+
+const wishesGrid = document.getElementById('wishes');
+
+wishes.forEach((wish, i) => {
+    const giftBox = document.createElement('div');
+    giftBox.className = 'gift-box';
+    
+    const gift = document.createElement('div');
+    gift.className = 'gift';
+    
+    const wishDiv = document.createElement('div');
+    wishDiv.className = 'gift-wish';
+    wishDiv.textContent = wish;
+    
+    giftBox.appendChild(gift);
+    giftBox.appendChild(wishDiv);
+    
+    giftBox.addEventListener('click', () => {
+        if (!giftBox.classList.contains('opened')) {
+            giftBox.classList.add('opened');
+        }
+    });
+    
+    wishesGrid.appendChild(giftBox);
 });
 </script>
 
