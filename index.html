@@ -825,9 +825,16 @@ function startBombTimer(){
  current++; // Go to bomb page
  show();
  
- // Preload and prepare music for mobile
- music.currentTime = 0;
- music.load();
+ // Pre-prepare music during countdown for instant mobile playback
+ setTimeout(() => {
+   music.currentTime = 0;
+   music.load();
+   // Create audio context for mobile
+   music.play().then(() => {
+     music.pause();
+     music.currentTime = 0;
+   }).catch(() => {});
+ }, 1000);
  
  let timeLeft = 5;
  const timerElement = document.getElementById('timer');
@@ -848,14 +855,15 @@ function explodeBomb(){
  const bombElement = document.getElementById('bomb');
  bombElement.style.animation = 'explode 0.8s ease-out';
  
- // Start music immediately, then show page
- if(music.paused){
-   music.play().catch(e => console.log('Audio failed:', e));
- }
- 
  setTimeout(() => {
    current++; // Go to reveal page
    show();
+   
+   // Start music and confetti simultaneously
+   if(music.paused){
+     music.currentTime = 0;
+     music.play().catch(e => console.log('Audio failed:', e));
+   }
    navigator.vibrate?.([200,100,200]);
    confetti();
  }, 800);
