@@ -825,6 +825,10 @@ function startBombTimer(){
  current++; // Go to bomb page
  show();
  
+ // Preload and prepare music for mobile
+ music.currentTime = 0;
+ music.load();
+ 
  let timeLeft = 5;
  const timerElement = document.getElementById('timer');
  const bombElement = document.getElementById('bomb');
@@ -844,20 +848,14 @@ function explodeBomb(){
  const bombElement = document.getElementById('bomb');
  bombElement.style.animation = 'explode 0.8s ease-out';
  
+ // Start music immediately, then show page
+ if(music.paused){
+   music.play().catch(e => console.log('Audio failed:', e));
+ }
+ 
  setTimeout(() => {
    current++; // Go to reveal page
    show();
-   // Try to play music with error handling for mobile
-   if(music.paused){
-     music.currentTime = 0;
-     music.play().catch(e => {
-       console.log('Audio play failed:', e);
-       // Fallback: try again after a short delay
-       setTimeout(() => {
-         music.play().catch(() => {});
-       }, 100);
-     });
-   }
    navigator.vibrate?.([200,100,200]);
    confetti();
  }, 800);
