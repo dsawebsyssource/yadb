@@ -626,8 +626,8 @@ canvas {
 <body>
 
 <div class="progress" id="progress"></div>
-<audio id="music" src="The Only Exception 4.mp3"></audio>
-<audio id="typeSound" src="keyboard-typing-fast-371229.mp3"></audio>
+<audio id="music" src="The Only Exception 4.mp3" preload="auto"></audio>
+<audio id="typeSound" src="keyboard-typing-fast-371229.mp3" preload="auto"></audio>
 <canvas id="confetti"></canvas>
 
 <!-- PAGES -->
@@ -781,6 +781,20 @@ const music = document.getElementById('music');
 const typeSound = document.getElementById('typeSound');
 let current = 0;
 let typingInterval = null;
+let audioEnabled = false;
+
+// Enable audio on first user interaction
+function enableAudio() {
+  if (!audioEnabled) {
+    music.load();
+    typeSound.load();
+    audioEnabled = true;
+  }
+}
+
+// Add event listeners for first interaction
+document.addEventListener('touchstart', enableAudio, { once: true });
+document.addEventListener('click', enableAudio, { once: true });
 
 function show(){
  pages.forEach(p=>p.classList.remove('active'));
@@ -833,9 +847,16 @@ function explodeBomb(){
  setTimeout(() => {
    current++; // Go to reveal page
    show();
+   // Try to play music with error handling for mobile
    if(music.paused){
      music.currentTime = 0;
-     music.play();
+     music.play().catch(e => {
+       console.log('Audio play failed:', e);
+       // Fallback: try again after a short delay
+       setTimeout(() => {
+         music.play().catch(() => {});
+       }, 100);
+     });
    }
    navigator.vibrate?.([200,100,200]);
    confetti();
@@ -878,7 +899,11 @@ And I choose you — every single day.`;
     box.innerHTML="";
     typeSound.currentTime = 0;
     typeSound.loop = true;
-    typeSound.play();
+    
+    // Try to play typing sound with mobile support
+    typeSound.play().catch(e => {
+        console.log('Typing sound failed:', e);
+    });
     
     typingInterval = setInterval(()=>{
         box.innerHTML += text[i];
